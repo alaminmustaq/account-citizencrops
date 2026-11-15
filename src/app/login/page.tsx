@@ -9,7 +9,7 @@ import { useBranding } from "@/lib/session";
 import { BrandMark } from "@/components/BrandMark";
 import type { Me } from "@/lib/types";
 
-const ssoLoginUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/sso/login`;
+const ssoLoginUrl = "/sso/login";
 
 function LoginForm() {
   const router = useRouter();
@@ -22,7 +22,6 @@ function LoginForm() {
   const [show, setShow] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(params.get("expired") ? "Your session expired. Please sign in again." : null);
-
   useEffect(() => {
     if (branding) {
       document.title = `Sign in | ${branding.app_name}`;

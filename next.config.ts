@@ -1,8 +1,7 @@
 import type { NextConfig } from "next";
 
-// The browser calls Laravel directly for SSO so its state cookie is set on the
-// backend host. The ordinary API remains same-origin through the Next.js proxy.
-const apiUrl = process.env.API_URL ?? "https://citizenaccount.datadss.com";
+// Keep SSO on the frontend origin so Laravel session cookies are scoped there.
+const apiUrl = "https://citizenaccount.datadss.com";
 
 const nextConfig: NextConfig = {
   output: "standalone",
@@ -13,6 +12,7 @@ const nextConfig: NextConfig = {
     return [
       { source: "/api/:path*", destination: `${apiUrl}/api/:path*` },
       { source: "/sanctum/:path*", destination: `${apiUrl}/sanctum/:path*` },
+      { source: "/sso/:path*", destination: `${apiUrl}/sso/:path*` },
     ];
   },
 };
