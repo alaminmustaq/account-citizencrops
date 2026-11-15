@@ -94,7 +94,13 @@ export function ReceivePaymentForm({ module, voucherId, onClose, onSaved }: { mo
 
   const type = types.data?.find((t) => String(t.id) === h.transaction_type_id);
   const headerAccounts = usePostingAccounts(type?.header_control ? [type.header_control.id] : [-1]);
-  const lineIds = useMemo(() => (definition?.accounts ?? []).map((a) => a.id), [definition]);
+  const lineIds = useMemo(() => {
+    if (typeof definition === "object" && definition && "accounts" in definition) {
+      const accs = (definition as { accounts?: Array<{ id: number }> }).accounts;
+      return (accs ?? []).map((a) => a.id);
+    }
+    return [] as number[];
+  }, [definition]);
   const lineAccounts = usePostingAccounts(lineIds.length ? lineIds : null);
   const isCashBank = (a: { code: string }) => a.code.startsWith("1-1-10-") || a.code.startsWith("1-1-11-");
   const filteredLineAccounts = useMemo(() => {
