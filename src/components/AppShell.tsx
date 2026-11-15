@@ -88,10 +88,17 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   async function signOut() {
     try {
-      await api("/auth/logout", { method: "POST" });
+      const res = await api<{ message: string; sso_logout_url?: string | null }>("/auth/logout", { method: "POST" });
+      if (res?.sso_logout_url) {
+        queryClient.clear();
+        window.location.href = res.sso_logout_url;
+        return;
+      }
+    } catch {
+      // ignore error during sign out
     } finally {
       queryClient.clear();
-      router.replace("/login");
+      router.replace("/login?local=1");
     }
   }
 
